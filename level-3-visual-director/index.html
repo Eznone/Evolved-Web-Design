@@ -3,98 +3,1196 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Level 3 — Visual Director</title>
+  <title>OVERCLOCK — Build Your Beast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #08080F;
+      --surface:  #10101C;
+      --purple:   #7C3AED;
+      --purple-l: #A78BFA;
+      --rose:     #F43F5E;
+      --cream:    #F0EBE1;
+      --muted:    #9090A8;
+      --border:   #1E1E32;
+      --footer-bg:#1A0A3D;
+      --font-display: 'Russo One', sans-serif;
+      --font-body:    'Chakra Petch', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0f;
-      color: #e2e2f0;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; cursor: pointer; }
+
+    /* ─── Z-INDEX SCALE ──────────────────────────────── */
+    /* nav: 50, marquee: 40, hero: 10, cards: 20         */
+
+    /* ─────────────────────────────────────────────────
+       1. MARQUEE BAR
+    ───────────────────────────────────────────────── */
+    .marquee-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: var(--purple);
+      height: 36px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-track {
+      display: flex;
+      white-space: nowrap;
+      animation: ticker 28s linear infinite;
+    }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation-play-state: paused; }
+    }
+
+    .marquee-item {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cream);
+      padding: 0 40px;
+      flex-shrink: 0;
+    }
+
+    .marquee-sep {
+      color: rgba(240,235,225,0.4);
+      padding: 0 4px;
+    }
+
+    /* ─────────────────────────────────────────────────
+       2. NAV
+    ───────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 36px;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      background: rgba(8,8,15,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 0.02em;
+      color: var(--cream);
+      flex-shrink: 0;
+      transition: color 200ms ease;
+    }
+    .nav-logo:hover { color: var(--purple-l); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      margin: 0 auto;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 200ms ease;
+    }
+    .nav-links a:hover { color: var(--cream); }
+
+    .nav-icons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 200ms ease, background 200ms ease;
+    }
+    .nav-icon-btn:hover { color: var(--cream); background: rgba(124,58,237,0.15); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       3. HERO
+    ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
       min-height: 100vh;
+      padding-top: 96px; /* marquee 36 + nav 60 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Purple glow radial background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 50% 40%, rgba(124,58,237,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 75% 60%, rgba(244,63,94,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Subtle grid texture */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 10;
+      padding: 0 0 80px;
+    }
+
+    /* Giant wordmark — fills viewport width */
+    .hero-wordmark {
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 17.5vw, 18rem);
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 0 16px;
+    }
+
+    .hero-sub {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+      padding: 0 24px;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 4vw, 3.25rem);
+      letter-spacing: -0.01em;
+      color: var(--cream);
+      text-align: center;
+    }
+
+    .hero-copy {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--muted);
+      text-align: center;
+      max-width: 460px;
+      line-height: 1.65;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+    }
+    .btn:focus-visible { outline: 2px solid var(--purple-l); outline-offset: 3px; }
+
+    .btn-primary {
+      background: var(--rose);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #e0324e;
+      box-shadow: 0 0 28px rgba(244,63,94,0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 1.5px solid rgba(240,235,225,0.3);
+    }
+    .btn-outline:hover {
+      border-color: var(--cream);
+      background: rgba(240,235,225,0.06);
+    }
+
+    /* ─────────────────────────────────────────────────
+       SECTION WRAPPER
+    ───────────────────────────────────────────────── */
+    .section {
+      padding: 96px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--purple-l);
+      margin-bottom: 16px;
+    }
+
+    /* ─────────────────────────────────────────────────
+       4. CATEGORY BENTO GRID
+    ───────────────────────────────────────────────── */
+    .bento-section {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .bento-header {
+      margin-bottom: 40px;
+    }
+
+    .bento-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4rem);
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      line-height: 1.1;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 220px;
+      gap: 16px;
+    }
+
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.3);
+      border-color: rgba(124,58,237,0.35);
+    }
+
+    /* Top gradient accent bar */
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--rose));
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .bento-card:hover::before { opacity: 1; }
+
+    /* Large decorative icon behind card */
+    .bento-card-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      opacity: 0.07;
+      transition: opacity 200ms ease;
+    }
+    .bento-card:hover .bento-card-icon { opacity: 0.14; }
+
+    .bento-card.tall { grid-row: span 2; }
+
+    .bento-card-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      letter-spacing: -0.01em;
+      color: var(--cream);
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bento-card-desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bento-link {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple-l);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 180ms ease, color 180ms ease;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+    .bento-card:hover .bento-link {
+      gap: 10px;
+      color: var(--cream);
+    }
+
+    @media (max-width: 768px) {
+      .bento-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 180px;
+      }
+      .bento-card.tall { grid-row: span 1; }
+    }
+
+    @media (max-width: 480px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 160px;
+      }
+    }
+
+    /* ─────────────────────────────────────────────────
+       5. "NEW TO OVERCLOCK?" COLLAGE SECTION
+    ───────────────────────────────────────────────── */
+    .intro-section {
+      background: #0D0D1A;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .intro-inner {
+      position: relative;
+      min-height: 560px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 24px;
+      padding: 96px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
     }
-    .level-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #7c6af7;
+
+    /* Scattered collage boxes (simulate product photos) */
+    .collage-box {
+      position: absolute;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .collage-box-1 {
+      width: 180px; height: 220px;
+      top: 60px; left: 2%;
+      background: linear-gradient(135deg, #3B0764 0%, #7C3AED 100%);
+      transform: rotate(-4deg);
+    }
+
+    .collage-box-2 {
+      width: 140px; height: 170px;
+      bottom: 80px; left: 12%;
+      background: linear-gradient(135deg, #1E0A3C 0%, #5B21B6 100%);
+      transform: rotate(3deg);
+    }
+
+    .collage-box-3 {
+      width: 160px; height: 200px;
+      top: 50px; right: 4%;
+      background: linear-gradient(135deg, #4C0519 0%, #F43F5E 100%);
+      transform: rotate(5deg);
+    }
+
+    .collage-box-4 {
+      width: 120px; height: 150px;
+      bottom: 70px; right: 14%;
+      background: linear-gradient(135deg, #1E1B4B 0%, #4338CA 100%);
+      transform: rotate(-3deg);
+    }
+
+    /* Inner shine layer for depth */
+    .collage-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    }
+
+    .intro-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 640px;
+    }
+
+    .intro-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      line-height: 1;
       margin-bottom: 20px;
     }
-    h1 {
-      font-size: clamp(2rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 16px;
+
+    .intro-copy {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .tag {
-      display: inline-block;
+
+    @media (max-width: 768px) {
+      .collage-box-1, .collage-box-2, .collage-box-3, .collage-box-4 {
+        display: none;
+      }
+      .intro-inner { min-height: 400px; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       6. HOT DROPS — HORIZONTAL SCROLL CARDS
+    ───────────────────────────────────────────────── */
+    .drops-section {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 96px 0;
+    }
+
+    .drops-header {
+      padding: 0 32px;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .drops-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      line-height: 1.1;
+    }
+
+    .drops-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .drops-scroll {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 8px 32px 24px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .drops-scroll::-webkit-scrollbar { display: none; }
+
+    .product-card {
+      flex-shrink: 0;
+      width: 280px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--purple);
+      border-radius: 16px;
+      padding: 24px;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: border-top-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .product-card:hover {
+      border-top-color: var(--rose);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+      transform: translateY(-4px);
+    }
+
+    /* Product color swatch (replaces image) */
+    .product-swatch {
+      width: 100%;
+      height: 140px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-swatch svg {
+      width: 56px;
+      height: 56px;
+      opacity: 0.6;
+    }
+
+    .product-tag {
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.3);
-      color: #7c6af7;
-      padding: 5px 14px;
-      border-radius: 999px;
-      margin-bottom: 32px;
+      color: var(--rose);
+      margin-bottom: 8px;
     }
-    p {
-      max-width: 520px;
-      color: #6b6b8a;
-      line-height: 1.7;
-      font-size: 1rem;
-      margin-bottom: 48px;
+
+    .product-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--cream);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
-    .concept {
-      background: #12121a;
-      border: 1px solid #1e1e2e;
-      border-radius: 12px;
-      padding: 24px 32px;
-      max-width: 540px;
-      text-align: left;
-      margin-bottom: 40px;
+
+    .product-specs {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
     }
-    .concept h3 {
-      font-size: 0.75rem;
+
+    .product-price {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--cream);
+      margin-bottom: 18px;
+    }
+
+    .product-price span {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    .product-cta {
+      width: 100%;
+      background: var(--purple);
+      color: var(--cream);
+      font-family: var(--font-body);
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #7c6af7;
-      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 180ms ease, box-shadow 180ms ease;
+      display: block;
+      text-align: center;
     }
-    .concept p {
-      font-size: 0.9rem;
-      color: #9090a8;
-      margin-bottom: 0;
+
+    .product-cta:hover {
+      background: #6D28D9;
+      box-shadow: 0 0 20px rgba(124,58,237,0.4);
     }
-    a.back {
-      font-size: 0.875rem;
-      color: #7c6af7;
-      text-decoration: none;
-      border: 1px solid rgba(124,106,247,0.3);
-      padding: 10px 22px;
-      border-radius: 8px;
-      transition: background 0.2s;
+    .product-cta:focus-visible { outline: 2px solid var(--purple-l); outline-offset: 3px; }
+
+    /* ─────────────────────────────────────────────────
+       7. FOOTER
+    ───────────────────────────────────────────────── */
+    footer {
+      background: var(--footer-bg);
+      padding: 72px 40px 0;
+      overflow: hidden;
     }
-    a.back:hover { background: rgba(124,106,247,0.1); }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 40px;
+      max-width: 1280px;
+      margin: 0 auto 60px;
+    }
+
+    /* Subscribe col spans first two positions */
+    .footer-subscribe {
+      grid-column: span 1;
+    }
+
+    .footer-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      letter-spacing: -0.01em;
+      color: var(--cream);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .footer-subscribe-hint {
+      font-size: 12px;
+      color: rgba(240,235,225,0.55);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .footer-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    .footer-input {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 180ms ease;
+      min-width: 0;
+    }
+    .footer-input::placeholder { color: rgba(240,235,225,0.35); }
+    .footer-input:focus { border-color: var(--purple-l); }
+
+    .footer-form-btn {
+      background: var(--cream);
+      color: var(--footer-bg);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 180ms ease;
+    }
+    .footer-form-btn:hover { background: #ddd; }
+    .footer-form-btn:focus-visible { outline: 2px solid var(--purple-l); outline-offset: 3px; }
+
+    .footer-col-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(240,235,225,0.45);
+      margin-bottom: 18px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(240,235,225,0.7);
+      transition: color 180ms ease;
+      cursor: pointer;
+    }
+    .footer-links a:hover { color: var(--cream); }
+
+    /* Giant wordmark at bottom of footer */
+    .footer-wordmark-wrap {
+      overflow: hidden;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-wordmark {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 16vw, 14rem);
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      white-space: nowrap;
+      display: block;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(240,235,225,0.1);
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(240,235,225,0.35);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-legal a {
+      font-size: 12px;
+      color: rgba(240,235,225,0.35);
+      cursor: pointer;
+      transition: color 180ms ease;
+    }
+    .footer-legal a:hover { color: rgba(240,235,225,0.7); }
+
+    @media (max-width: 900px) {
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+      .footer-subscribe { grid-column: span 2; }
+    }
+
+    @media (max-width: 480px) {
+      footer { padding: 56px 24px 0; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-subscribe { grid-column: span 2; }
+      .footer-form { flex-direction: column; }
+      .section { padding: 64px 20px; }
+      .drops-header { padding: 0 20px; }
+      .drops-scroll { padding: 8px 20px 24px; }
+    }
   </style>
 </head>
 <body>
-  <div class="level-num">Level 03</div>
-  <h1>Visual Director</h1>
-  <div class="tag">Placeholder — Work in Progress</div>
-  <p>This page will demonstrate showing Claude UI screenshots from Awwwards, Godly, and Dribbble as concrete visual references for what premium design looks like.</p>
-  <div class="concept">
-    <h3>The Concept</h3>
-    <p>Sourcing visual inspiration and feeding UI screenshots directly into Claude — showing, not just telling. Moving from abstract description to concrete visual reference.</p>
+
+  <!-- ─── 1. MARQUEE BAR ─────────────────────────── -->
+  <div class="marquee-wrap" role="marquee" aria-label="Promotional announcements">
+    <div class="marquee-track" aria-hidden="true">
+      <!-- duplicated for seamless loop -->
+      <span class="marquee-item">Free shipping on orders over $150 <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">RTX 5090 — now in stock <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">Use code <strong>BEASTMODE</strong> for 10% off your first build <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">New OVERCLOCK Pro cases just dropped <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">AMD Ryzen 9 9950X — limited stock <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">Free shipping on orders over $150 <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">RTX 5090 — now in stock <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">Use code <strong>BEASTMODE</strong> for 10% off your first build <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">New OVERCLOCK Pro cases just dropped <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">AMD Ryzen 9 9950X — limited stock <span class="marquee-sep">·</span></span>
+    </div>
   </div>
-  <a class="back" href="/">← Back to hub</a>
+
+  <!-- ─── 2. NAV ─────────────────────────────────── -->
+  <nav aria-label="Main navigation">
+    <a href="#" class="nav-logo" aria-label="OVERCLOCK home">OVERCLOCK</a>
+    <ul class="nav-links" role="list">
+      <li><a href="#categories">CPUs</a></li>
+      <li><a href="#categories">GPUs</a></li>
+      <li><a href="#categories">Memory</a></li>
+      <li><a href="#categories">Storage</a></li>
+      <li><a href="#categories">Cooling</a></li>
+      <li><a href="#categories">Cases</a></li>
+    </ul>
+    <div class="nav-icons">
+      <!-- Search icon -->
+      <button class="nav-icon-btn" aria-label="Search" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </button>
+      <!-- Cart icon -->
+      <button class="nav-icon-btn" aria-label="Shopping cart" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── 3. HERO ────────────────────────────────── -->
+  <section class="hero" aria-label="Hero">
+    <div class="hero-inner">
+      <h1 class="hero-wordmark">OVERCLOCK</h1>
+      <div class="hero-sub">
+        <p class="hero-tagline">Build Your Beast.</p>
+        <p class="hero-copy">Premium components sourced for builders who demand the absolute limit. No compromises.</p>
+        <div class="hero-ctas">
+          <a href="#drops" class="btn btn-primary">
+            Shop Now
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#categories" class="btn btn-outline">Explore Builds</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 4. CATEGORY BENTO GRID ───────────────── -->
+  <section class="bento-section" id="categories" aria-label="Shop by category">
+    <div class="section">
+      <div class="bento-header">
+        <p class="section-label">Shop by Category</p>
+        <h2 class="bento-title">Every component.<br>One destination.</h2>
+      </div>
+      <div class="bento-grid">
+
+        <!-- CPU — tall -->
+        <article class="bento-card tall" tabindex="0" role="button" aria-label="Shop CPUs">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <rect x="20" y="20" width="40" height="40" rx="4"/>
+            <rect x="28" y="28" width="24" height="24" rx="2"/>
+            <line x1="28" y1="12" x2="28" y2="20"/><line x1="36" y1="12" x2="36" y2="20"/>
+            <line x1="44" y1="12" x2="44" y2="20"/><line x1="52" y1="12" x2="52" y2="20"/>
+            <line x1="28" y1="60" x2="28" y2="68"/><line x1="36" y1="60" x2="36" y2="68"/>
+            <line x1="44" y1="60" x2="44" y2="68"/><line x1="52" y1="60" x2="52" y2="68"/>
+            <line x1="12" y1="28" x2="20" y2="28"/><line x1="12" y1="36" x2="20" y2="36"/>
+            <line x1="12" y1="44" x2="20" y2="44"/><line x1="12" y1="52" x2="20" y2="52"/>
+            <line x1="60" y1="28" x2="68" y2="28"/><line x1="60" y1="36" x2="68" y2="36"/>
+            <line x1="60" y1="44" x2="68" y2="44"/><line x1="60" y1="52" x2="68" y2="52"/>
+          </svg>
+          <h3 class="bento-card-name">Processors</h3>
+          <p class="bento-card-desc">Intel Core Ultra &amp; AMD Ryzen. The brain of every beast build.</p>
+          <span class="bento-link">Shop CPUs <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+        <!-- GPU -->
+        <article class="bento-card" tabindex="0" role="button" aria-label="Shop GPUs">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <rect x="8" y="24" width="64" height="32" rx="4"/>
+            <rect x="18" y="32" width="20" height="16" rx="2"/>
+            <rect x="42" y="32" width="20" height="16" rx="2"/>
+            <line x1="20" y1="56" x2="20" y2="68"/><line x1="32" y1="56" x2="32" y2="68"/>
+            <line x1="48" y1="56" x2="48" y2="68"/><line x1="60" y1="56" x2="60" y2="68"/>
+          </svg>
+          <h3 class="bento-card-name">Graphics Cards</h3>
+          <p class="bento-card-desc">NVIDIA RTX &amp; AMD RX. Max frames, max immersion.</p>
+          <span class="bento-link">Shop GPUs <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+        <!-- RAM -->
+        <article class="bento-card" tabindex="0" role="button" aria-label="Shop RAM">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <rect x="12" y="28" width="56" height="24" rx="3"/>
+            <line x1="22" y1="28" x2="22" y2="52"/><line x1="30" y1="28" x2="30" y2="52"/>
+            <line x1="38" y1="28" x2="38" y2="52"/><line x1="46" y1="28" x2="46" y2="52"/>
+            <line x1="54" y1="28" x2="54" y2="52"/><line x1="62" y1="28" x2="62" y2="52"/>
+            <line x1="22" y1="52" x2="22" y2="60"/><line x1="30" y1="52" x2="30" y2="60"/>
+            <line x1="38" y1="52" x2="38" y2="60"/><line x1="46" y1="52" x2="46" y2="60"/>
+            <line x1="54" y1="52" x2="54" y2="60"/><line x1="62" y1="52" x2="62" y2="60"/>
+          </svg>
+          <h3 class="bento-card-name">Memory</h3>
+          <p class="bento-card-desc">DDR5 &amp; DDR4. Speed that keeps up with your ambitions.</p>
+          <span class="bento-link">Shop RAM <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+        <!-- SSD — tall -->
+        <article class="bento-card tall" tabindex="0" role="button" aria-label="Shop SSDs">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <rect x="16" y="22" width="48" height="36" rx="4"/>
+            <rect x="24" y="30" width="32" height="8" rx="2"/>
+            <circle cx="28" cy="50" r="4"/><circle cx="40" cy="50" r="4"/><circle cx="52" cy="50" r="4"/>
+          </svg>
+          <h3 class="bento-card-name">Storage</h3>
+          <p class="bento-card-desc">NVMe Gen5 SSDs &amp; SATA. Load times so fast they feel instant.</p>
+          <span class="bento-link">Shop Storage <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+        <!-- Cooling -->
+        <article class="bento-card" tabindex="0" role="button" aria-label="Shop Cooling">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <circle cx="40" cy="40" r="24"/>
+            <circle cx="40" cy="40" r="8"/>
+            <line x1="40" y1="16" x2="40" y2="32"/><line x1="40" y1="48" x2="40" y2="64"/>
+            <line x1="16" y1="40" x2="32" y2="40"/><line x1="48" y1="40" x2="64" y2="40"/>
+            <line x1="23" y1="23" x2="34" y2="34"/><line x1="46" y1="46" x2="57" y2="57"/>
+            <line x1="57" y1="23" x2="46" y2="34"/><line x1="34" y1="46" x2="23" y2="57"/>
+          </svg>
+          <h3 class="bento-card-name">Cooling</h3>
+          <p class="bento-card-desc">AIO liquid coolers &amp; air tower heatsinks. Stay cool, stay dominant.</p>
+          <span class="bento-link">Shop Cooling <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+        <!-- PSU -->
+        <article class="bento-card" tabindex="0" role="button" aria-label="Shop Power Supplies">
+          <svg class="bento-card-icon" viewBox="0 0 80 80" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+            <rect x="14" y="22" width="52" height="36" rx="4"/>
+            <rect x="22" y="30" width="16" height="20" rx="2"/>
+            <line x1="46" y1="34" x2="58" y2="34"/>
+            <line x1="46" y1="40" x2="58" y2="40"/>
+            <line x1="46" y1="46" x2="54" y2="46"/>
+          </svg>
+          <h3 class="bento-card-name">Power Supplies</h3>
+          <p class="bento-card-desc">80+ Gold &amp; Platinum. Reliable power for the most demanding rigs.</p>
+          <span class="bento-link">Shop PSUs <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 5. "NEW TO OVERCLOCK?" SECTION ────────── -->
+  <section class="intro-section" aria-label="New to OVERCLOCK">
+    <div class="intro-inner">
+      <!-- Scattered collage boxes -->
+      <div class="collage-box collage-box-1" aria-hidden="true"></div>
+      <div class="collage-box collage-box-2" aria-hidden="true"></div>
+      <div class="collage-box collage-box-3" aria-hidden="true"></div>
+      <div class="collage-box collage-box-4" aria-hidden="true"></div>
+
+      <div class="intro-content">
+        <h2 class="intro-headline">new to overclock?</h2>
+        <p class="intro-copy">
+          We'll guide you through every component you need — from first build to extreme overclocking machine, no overwhelming specs, just pure performance clarity.
+        </p>
+        <a href="#categories" class="btn btn-outline">Explore Builds</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 6. HOT DROPS ──────────────────────────── -->
+  <section class="drops-section" id="drops" aria-label="Hot drops — featured products">
+    <div class="drops-header">
+      <div>
+        <p class="section-label">Hot Drops</p>
+        <h2 class="drops-title">This week's<br>picks.</h2>
+      </div>
+      <p class="drops-subtitle">Swipe to explore →</p>
+    </div>
+    <div class="drops-scroll" role="list">
+
+      <!-- Card 1 — GPU -->
+      <article class="product-card" role="listitem" tabindex="0">
+        <div class="product-swatch" style="background: linear-gradient(135deg, #2D1B69 0%, #7C3AED 100%);">
+          <svg viewBox="0 0 56 56" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="16" width="48" height="24" rx="3"/>
+            <rect x="10" y="22" width="14" height="12" rx="1.5"/>
+            <rect x="30" y="22" width="14" height="12" rx="1.5"/>
+            <line x1="12" y1="40" x2="12" y2="48"/><line x1="20" y1="40" x2="20" y2="48"/>
+            <line x1="36" y1="40" x2="36" y2="48"/><line x1="44" y1="40" x2="44" y2="48"/>
+          </svg>
+        </div>
+        <p class="product-tag">New Drop</p>
+        <h3 class="product-name">RTX 5090 Ti</h3>
+        <p class="product-specs">32GB GDDR7 · 512-bit · 1100W<br>Ada Lovelace Next-Gen</p>
+        <p class="product-price">$1,999 <span>starting at</span></p>
+        <a href="#" class="product-cta" role="button">Add to Cart</a>
+      </article>
+
+      <!-- Card 2 — CPU -->
+      <article class="product-card" role="listitem" tabindex="0">
+        <div class="product-swatch" style="background: linear-gradient(135deg, #1E0A3C 0%, #F43F5E 60%, #7C3AED 100%);">
+          <svg viewBox="0 0 56 56" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" aria-hidden="true">
+            <rect x="14" y="14" width="28" height="28" rx="3"/>
+            <rect x="20" y="20" width="16" height="16" rx="2"/>
+            <line x1="20" y1="8" x2="20" y2="14"/><line x1="28" y1="8" x2="28" y2="14"/>
+            <line x1="36" y1="8" x2="36" y2="14"/><line x1="20" y1="42" x2="20" y2="48"/>
+            <line x1="28" y1="42" x2="28" y2="48"/><line x1="36" y1="42" x2="36" y2="48"/>
+            <line x1="8" y1="20" x2="14" y2="20"/><line x1="8" y1="28" x2="14" y2="28"/>
+            <line x1="8" y1="36" x2="14" y2="36"/><line x1="42" y1="20" x2="48" y2="20"/>
+            <line x1="42" y1="28" x2="48" y2="28"/><line x1="42" y1="36" x2="48" y2="36"/>
+          </svg>
+        </div>
+        <p class="product-tag">Best Seller</p>
+        <h3 class="product-name">Ryzen 9 9950X</h3>
+        <p class="product-specs">16-Core / 32-Thread · 5.7GHz<br>Zen 5 · 170W TDP</p>
+        <p class="product-price">$699 <span>starting at</span></p>
+        <a href="#" class="product-cta" role="button">Add to Cart</a>
+      </article>
+
+      <!-- Card 3 — RAM -->
+      <article class="product-card" role="listitem" tabindex="0">
+        <div class="product-swatch" style="background: linear-gradient(135deg, #064E3B 0%, #10B981 100%);">
+          <svg viewBox="0 0 56 56" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" aria-hidden="true">
+            <rect x="8" y="20" width="40" height="16" rx="2"/>
+            <line x1="16" y1="20" x2="16" y2="36"/><line x1="22" y1="20" x2="22" y2="36"/>
+            <line x1="28" y1="20" x2="28" y2="36"/><line x1="34" y1="20" x2="34" y2="36"/>
+            <line x1="40" y1="20" x2="40" y2="36"/>
+            <line x1="16" y1="36" x2="16" y2="44"/><line x1="22" y1="36" x2="22" y2="44"/>
+            <line x1="28" y1="36" x2="28" y2="44"/><line x1="34" y1="36" x2="34" y2="44"/>
+            <line x1="40" y1="36" x2="40" y2="44"/>
+          </svg>
+        </div>
+        <p class="product-tag">Limited Stock</p>
+        <h3 class="product-name">Trident Z5 DDR5</h3>
+        <p class="product-specs">64GB Kit · 7200MT/s CL34<br>RGB · Intel XMP 3.0</p>
+        <p class="product-price">$289 <span>starting at</span></p>
+        <a href="#" class="product-cta" role="button">Add to Cart</a>
+      </article>
+
+      <!-- Card 4 — SSD -->
+      <article class="product-card" role="listitem" tabindex="0">
+        <div class="product-swatch" style="background: linear-gradient(135deg, #1E3A5F 0%, #3B82F6 100%);">
+          <svg viewBox="0 0 56 56" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" aria-hidden="true">
+            <rect x="10" y="16" width="36" height="24" rx="3"/>
+            <rect x="16" y="22" width="22" height="6" rx="1.5"/>
+            <circle cx="18" cy="34" r="3"/><circle cx="28" cy="34" r="3"/><circle cx="38" cy="34" r="3"/>
+          </svg>
+        </div>
+        <p class="product-tag">Gen 5 NVMe</p>
+        <h3 class="product-name">Samsung 990 Pro</h3>
+        <p class="product-specs">4TB PCIe 5.0 · 14,000MB/s<br>M.2 2280 · TLC NAND</p>
+        <p class="product-price">$379 <span>starting at</span></p>
+        <a href="#" class="product-cta" role="button">Add to Cart</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── 7. FOOTER ─────────────────────────────── -->
+  <footer aria-label="Site footer">
+    <div class="footer-top">
+      <div class="footer-subscribe">
+        <p class="footer-tagline">the right specs<br>for the right build</p>
+        <p class="footer-subscribe-hint">Join OVERCLOCK for 10% off your first order.</p>
+        <form class="footer-form" aria-label="Newsletter signup" onsubmit="return false;">
+          <label for="footer-email" class="sr-only">Your email address</label>
+          <input id="footer-email" type="email" class="footer-input" placeholder="your email address" autocomplete="email" />
+          <button type="submit" class="footer-form-btn">Subscribe</button>
+        </form>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Nav</p>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#categories">Shop</a></li>
+          <li><a href="#">Builds</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Subscribe</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Shop</p>
+        <ul class="footer-links">
+          <li><a href="#">CPUs</a></li>
+          <li><a href="#">GPUs</a></li>
+          <li><a href="#">Memory</a></li>
+          <li><a href="#">Storage</a></li>
+          <li><a href="#">Cooling</a></li>
+          <li><a href="#">Cases</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Help</p>
+        <ul class="footer-links">
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Returns Policy</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Socials</p>
+        <ul class="footer-links">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">X / Twitter</a></li>
+          <li><a href="#">Discord</a></li>
+          <li><a href="#">Reddit</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Giant wordmark -->
+    <div class="footer-wordmark-wrap" aria-hidden="true">
+      <span class="footer-wordmark">OVERCLOCK</span>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">All Rights Reserved &copy; 2026 OVERCLOCK Inc.</p>
+      <nav class="footer-legal" aria-label="Legal links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- screen-reader only utility -->
+  <style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}</style>
+
 </body>
 </html>

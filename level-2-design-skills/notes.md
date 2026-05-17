@@ -1,0 +1,5 @@
+- Sites to use for reference:
+    - awwards.com
+    - godly.website
+    - pintrest (shockingly)
+    - dribbble.com
