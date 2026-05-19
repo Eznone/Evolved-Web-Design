@@ -1,0 +1,33 @@
+/* ─── Tablet / small desktop ─── */
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .hero { padding: 100px 20px 0; }
+  .hero-cards { display: none; }
+  .hero-status { margin-top: 32px; margin-bottom: 64px; }
+  .section { padding: 64px 20px; }
+  .pipeline-viz { gap: 0; }
+  .pv-conn { width: 24px; }
+  .cta-inner { padding: 80px 20px; }
+  .footer-wrap { padding: 48px 20px 32px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 500px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .pv-conn { width: 16px; }
+}
+
+/* ─── Reduced Motion (accessibility) ─── */
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-beam,
+  .btn-effect,
+  .slider-track,
+  .pv-dot,
+  .status-dot,
+  .log-dot.ld-run { animation: none !important; }
+  .btn--cta:hover { transform: none; }
+}

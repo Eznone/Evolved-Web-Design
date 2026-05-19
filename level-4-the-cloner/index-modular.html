@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeKit — CI/CD for modern teams</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.7)" stroke-width="1"/>
+        <rect x="18" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.7)" stroke-width="1"/>
+        <path d="M8 13H18" stroke="rgba(168,197,245,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="13" cy="13" r="2.5" fill="rgba(168,197,245,0.9)"/>
+        <circle cx="13" cy="13" r="4.5" stroke="rgba(168,197,245,0.2)" stroke-width="1"/>
+      </svg>
+      <span class="nav-logo-wordmark">PipeKit</span>
+    </a>
+    <div class="nav-right">
+      <a href="#" class="btn btn--ghost" style="padding:8px 14px; font-size:0.8rem;">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" style="opacity:0.7">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.48 2 2 5.48 2 10.02c0 3.54 2.29 6.54 5.47 7.6.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.36-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.96 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.26 2-.27.68.01 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49 0 1.07-.01 1.93-.01 2.2 0 .21.14.46.55.38A8.013 8.013 0 0018 10.02C18 5.48 14.52 2 10 2z"/>
+        </svg>
+        GitHub
+      </a>
+      <a href="#" class="btn btn--glow">
+        <span class="btn-effect"></span>
+        <span class="btn-text">Get started</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="hero" id="top">
+    <canvas class="hero-canvas" id="hero-canvas"></canvas>
+
+    <div class="spotlights">
+      <div class="spotlight-beam" style="--dur:9s; --delay:0s"></div>
+      <div class="spotlight-beam" style="--dur:13s; --delay:-4s; opacity:0.7;"></div>
+      <div class="spotlight-beam" style="--dur:7s; --delay:-7s; opacity:0.5;"></div>
+    </div>
+
+    <div class="hero-grid"></div>
+
+    <span class="hero-cross" style="top:22%;left:14%"></span>
+    <span class="hero-cross" style="top:22%;right:14%"></span>
+    <span class="hero-cross" style="top:62%;left:8%"></span>
+    <span class="hero-cross" style="top:62%;right:8%"></span>
+
+    <div class="hero-content">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Introducing PipeKit</span></div>
+      </div>
+      <h1 class="hero-headline">
+        <span class="text-gradient">The world's fastest</span><br>
+        <span class="text-gradient">CI/CD pipeline.</span>
+      </h1>
+      <p class="hero-sub">
+        Powered by PipeKit + open infrastructure. Ship code at machine speed with intelligent caching, parallel execution, and zero-config deployments.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn--cta">Get started free</a>
+        <a href="#features" class="btn btn--ghost">View features →</a>
+      </div>
+    </div>
+
+    <!-- Pipeline Cards -->
+    <div class="hero-cards">
+      <!-- Left: Build -->
+      <div class="pipeline-card pc-left">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(251,191,36,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(251,191,36,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div>
+            <div class="pc-title">Build</div>
+            <div class="pc-sub">acme/api · main</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>Installing packages</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Cache hit (847ms saved)</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Compiling TypeScript</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Build complete · 2.1s</div>
+        </div>
+      </div>
+
+      <!-- Center: Test -->
+      <div class="pipeline-card pc-center">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(59,130,246,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(59,130,246,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div>
+            <div class="pc-title">Running Tests</div>
+            <div class="pc-sub">142 suites · parallel</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>unit: 142 passed · 0.8s</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>integration: 38 passed · 1.2s</div>
+          <div class="log-line"><div class="log-dot ld-run"></div>e2e: running 14/24…</div>
+          <div class="log-line"><div class="log-dot ld-pend"></div>coverage: pending</div>
+        </div>
+        <button class="pc-btn">View live logs →</button>
+      </div>
+
+      <!-- Right: Deploy -->
+      <div class="pipeline-card pc-right">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(34,197,94,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(34,197,94,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
+          <div>
+            <div class="pc-title">Deploy</div>
+            <div class="pc-sub">production · us-east-1</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>Build verified</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Tests passed</div>
+          <div class="log-line"><div class="log-dot ld-run"></div>Rolling out to k8s…</div>
+          <div class="log-line"><div class="log-dot ld-pend"></div>Health check</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-status">
+      <div class="status-dot"></div>
+      <span>All systems operational · 99.98% uptime</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FEATURE SLIDER ═══════════════ -->
+  <div class="feature-slider">
+    <div class="slider-track" id="slider-track">
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><span class="slider-label">Build</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><span class="slider-label">Test</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div><span class="slider-label">Deploy</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="slider-label">Monitor</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div><span class="slider-label">Rollback</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><span class="slider-label">Cache</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="slider-label">Scale</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="slider-label">Notify</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><span class="slider-label">Preview</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="slider-label">Audit</span></div>
+      <div class="slider-sep"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PIPELINE SECTION ═══════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:260px">
+        <div class="badge"><span>Zero friction</span></div>
+      </div>
+      <h3>
+        <span class="text-gradient">Your code. Your pipeline.</span><br>
+        Maximum velocity.
+      </h3>
+      <p>PipeKit is compatible with any stack. Intelligent parallelization and smart dependency caching cut pipeline times by up to 10× with zero configuration.</p>
+    </div>
+
+    <div class="pipeline-viz">
+      <div class="pv-stage">
+        <div class="pv-box ok">source</div>
+        <span class="pv-status">✓ ready</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box ok">install</div>
+        <span class="pv-status">✓ cached</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0.4s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box ok">build</div>
+        <span class="pv-status">✓ 2.1s</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0.8s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box active">test</div>
+        <span class="pv-status">⏳ running</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:1.2s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box">deploy</div>
+        <span class="pv-status">— pending</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FEATURES ═══════════════ -->
+  <div class="section section--border-top" id="features">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Extensible by design</span></div>
+      </div>
+      <h3>
+        Your team. Your workflow.<br>
+        <span class="text-gradient">Maximum flexibility.</span>
+      </h3>
+      <p>PipeKit adapts to how you build, giving your team complete control without sacrificing speed or reliability.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h4>Sub-second builds</h4>
+        <p>Intelligent layer caching and parallel job execution cut build times by up to 10×. Your code compiles before your coffee cools.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div>
+        <h4>Auto rollback</h4>
+        <p>Automatic failure detection with instant rollback to the last known-good deployment. Zero manual intervention required.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h4>Full observability</h4>
+        <p>Real-time logs, distributed traces, and build analytics in a unified pane. Know exactly what's happening at every stage.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <h4>50+ integrations</h4>
+        <p>Connect GitHub, GitLab, Docker, Kubernetes, AWS, and more. Works with your existing stack from day one with no lock-in.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ INTEGRATIONS ═══════════════ -->
+  <div class="section section--border-top">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Framework freedom</span></div>
+      </div>
+      <h3>
+        <span class="text-gradient">Built on open standards.</span><br>
+        Connects to everything.
+      </h3>
+      <p>PipeKit integrates with the tools your team already uses — from source control to cloud providers to notification channels.</p>
+    </div>
+
+    <div class="integrations-grid">
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.48 2 2 5.48 2 10.02c0 3.54 2.29 6.54 5.47 7.6.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.36-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.96 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.26 2-.27.68.01 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49 0 1.07-.01 1.93-.01 2.2 0 .21.14.46.55.38A8.013 8.013 0 0018 10.02C18 5.48 14.52 2 10 2z"/></svg>GitHub</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 18.45L6.87 8.73H13.13L10 18.45z"/><path opacity=".7" d="M10 18.45L6.87 8.73H2.54L10 18.45z"/><path opacity=".4" d="M2.54 8.73l-1 3.07a.68.68 0 00.25.76L10 18.45 2.54 8.73z"/><path d="M2.54 8.73H6.87L5.08 3.25a.34.34 0 00-.65 0L2.54 8.73z"/><path opacity=".7" d="M10 18.45l3.13-9.72H17.46L10 18.45z"/><path opacity=".4" d="M17.46 8.73l1 3.07a.68.68 0 01-.25.76L10 18.45l7.46-9.72z"/><path d="M17.46 8.73H13.13l1.79-5.48a.34.34 0 01.65 0l1.89 5.48z"/></svg>GitLab</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="2" y="10" width="3" height="3" rx=".4"/><rect x="6" y="10" width="3" height="3" rx=".4"/><rect x="10" y="10" width="3" height="3" rx=".4"/><rect x="10" y="6" width="3" height="3" rx=".4"/><rect x="6" y="6" width="3" height="3" rx=".4"/><path d="M17.5 10.5c-.3-1.5-1.5-2-2.5-2h-.5c-.2-1.2-1-2.5-3-3l-.5 1c1.3.4 1.8 1.3 2 2H5a3 3 0 000 6h9.5a3 3 0 003-3v-1z" opacity=".6"/></svg>Docker</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l7.2 4v8L10 18l-7.2-4V6L10 2z" opacity=".15" stroke="currentColor" stroke-width="1"/><path d="M10 5v10M5.3 7.5l9.4 5M14.7 7.5l-9.4 5"/></svg>Kubernetes</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 13c-1.7-.7-2-2-2-3s.5-2.5 2-3l.7 1.2C5.9 8.7 5.5 9.5 5.5 10s.4 1.3 1.2 1.8L6 13zm8 0l-.7-1.2c.8-.5 1.2-1.3 1.2-1.8s-.4-1.3-1.2-1.8L14 7c1.5.5 2 2 2 3s-.3 2.3-2 3zM8 6.5l-.8-1.3A5.5 5.5 0 0110 4.5c.96 0 1.88.27 2.8.7L12 6.5A4 4 0 0010 6a4 4 0 00-2 .5zM8 13.5l-.2 1.5A5.5 5.5 0 0010 15.5c.96 0 1.88-.27 2.8-.7L12.2 13.3A4 4 0 0110 14a4 4 0 01-2-.5z" opacity=".7"/><circle cx="10" cy="10" r="2"/></svg>AWS</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3L18 17H2L10 3z"/></svg>Vercel</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="3" y="11" width="4" height="4" rx="2" opacity=".9"/><rect x="11" y="3" width="4" height="4" rx="2" opacity=".9"/><rect x="3" y="11" width="4" height="2" rx="0" transform="rotate(-90 7 11)" opacity=".4"/><rect x="11" y="11" width="4" height="4" rx="2" opacity=".9"/><rect x="11" y="11" width="4" height="2" rx="0" opacity=".4"/></svg>Slack</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.5 5l5 2.9v5.8l-5-2.9V5z" opacity=".9"/><path d="M3.5 7.9l5-2.9v5.8l-5 2.9V7.9z" opacity=".6"/><path d="M9 13.7l5-2.9v2.9L9 16.6v-2.9z" opacity=".4"/></svg>Terraform</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a6 6 0 100 12A6 6 0 0010 4zm0 2a4 4 0 110 8 4 4 0 010-8z" opacity=".5"/><circle cx="10" cy="10" r="2"/></svg>Datadog</div>
+      <div class="integ-chip"><svg viewBox="0 0 20 20" fill="currentColor"><ellipse cx="10" cy="6" rx="6" ry="3" opacity=".7"/><path d="M4 6v8c0 1.65 2.69 3 6 3s6-1.35 6-3V6" opacity=".4"/><path d="M4 10c0 1.65 2.69 3 6 3s6-1.35 6-3" opacity=".4"/></svg>Postgres</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CTA ═══════════════ -->
+  <div class="cta-wrap">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="between-lines" style="max-width:260px">
+        <div class="badge"><span>Shine bright</span></div>
+      </div>
+      <h2>
+        <span class="text-gradient">Your brand. Your pipeline.</span>
+      </h2>
+      <p>PipeKit can be fully customized to fit your team's workflow, branding, and infrastructure needs from day one.</p>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center;">
+        <a href="#" class="btn btn--cta">Get started free</a>
+        <a href="#" class="btn btn--ghost">Talk to sales →</a>
+      </div>
+      <p style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;">No credit card required. Free tier available.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo" style="gap:9px;">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.6)" stroke-width="1"/>
+              <rect x="18" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.6)" stroke-width="1"/>
+              <path d="M8 13H18" stroke="rgba(168,197,245,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="13" cy="13" r="2.5" fill="rgba(168,197,245,0.85)"/>
+            </svg>
+            <span style="font-size:0.9rem; font-weight:700; letter-spacing:-0.02em;">PipeKit</span>
+          </a>
+          <p class="footer-brand-tagline">The world's fastest CI/CD pipeline for modern development teams.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Roadmap</a></li>
+            <li><a href="#">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Docs</h5>
+          <ul>
+            <li><a href="#">Getting started</a></li>
+            <li><a href="#">Configuration</a></li>
+            <li><a href="#">Integrations</a></li>
+            <li><a href="#">API reference</a></li>
+            <li><a href="#">CLI</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 PipeKit, Inc. All rights reserved.</span>
+        <span style="display:flex;gap:20px;">
+          <a href="#" style="color:var(--text-dim);transition:color 0.2s;" onmouseover="this.style.color='var(--text-muted)'" onmouseout="this.style.color='var(--text-dim)'">Privacy</a>
+          <a href="#" style="color:var(--text-dim);transition:color 0.2s;" onmouseover="this.style.color='var(--text-muted)'" onmouseout="this.style.color='var(--text-dim)'">Terms</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

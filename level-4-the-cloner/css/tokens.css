@@ -1,0 +1,35 @@
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #090910;
+  color: #e8eaf2;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ─── Design Tokens ─── */
+:root {
+  --bg: #090910;
+  --bg-surface: rgba(255,255,255,0.03);
+  --bg-surface-hover: rgba(255,255,255,0.055);
+  --border: rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.14);
+  --text: #e8eaf2;
+  --text-muted: rgba(232,234,242,0.5);
+  --text-dim: rgba(232,234,242,0.28);
+  --accent: #a8c5f5;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --radius-card: 12px;
+}
+
+/* ─── Utilities ─── */
+.text-gradient {
+  background: linear-gradient(140deg, #ffffff 25%, #a8c5f5 65%, #9090e8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
