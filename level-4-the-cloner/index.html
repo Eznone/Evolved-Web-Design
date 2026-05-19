@@ -3,98 +3,1184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Level 4 — The Cloner</title>
+  <title>PipeKit — CI/CD for modern teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0f;
-      color: #e2e2f0;
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #090910;
+      color: #e8eaf2;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Design Tokens ─── */
+    :root {
+      --bg: #090910;
+      --bg-surface: rgba(255,255,255,0.03);
+      --bg-surface-hover: rgba(255,255,255,0.055);
+      --border: rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.14);
+      --text: #e8eaf2;
+      --text-muted: rgba(232,234,242,0.5);
+      --text-dim: rgba(232,234,242,0.28);
+      --accent: #a8c5f5;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --radius-card: 12px;
+    }
+
+    /* ─── Utilities ─── */
+    .text-gradient {
+      background: linear-gradient(140deg, #ffffff 25%, #a8c5f5 65%, #9090e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── Badge ─── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(168,197,245,0.25);
+      background: rgba(168,197,245,0.05);
+    }
+    .badge span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 30%, #a8c5f5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── Between-lines divider ─── */
+    .between-lines {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+    }
+    .between-lines::before,
+    .between-lines::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(168,197,245,0.2), transparent);
+    }
+    .between-lines--left::before  { background: linear-gradient(to right, transparent, rgba(168,197,245,0.2)); }
+    .between-lines--left::after   { background: linear-gradient(to right, rgba(168,197,245,0.2), transparent); }
+
+    /* ─── Section Header ─── */
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .section-header h3 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* ─── Corner-dot box ─── */
+    .corner-box {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .corner-box::before, .corner-box::after,
+    .corner-box > .cb-inner::before, .corner-box > .cb-inner::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: rgba(255,255,255,0.22);
+      border-radius: 1px;
+      z-index: 2;
+    }
+    .corner-box::before    { top: -3px;  left: -3px; }
+    .corner-box::after     { top: -3px;  right: -3px; }
+    .corner-box > .cb-inner::before { bottom: -3px; left: -3px; }
+    .corner-box > .cb-inner::after  { bottom: -3px; right: -3px; }
+
+    /* ─── Glowing Button ─── */
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn:focus-visible {
+      outline: 2px solid rgba(168,197,245,0.7);
+      outline-offset: 2px;
+    }
+    .btn--glow {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.13);
+      color: var(--text);
+      overflow: hidden;
+    }
+    .btn--glow .btn-effect {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 300deg, rgba(168,197,245,0.4) 340deg, transparent 360deg);
+      animation: btn-spin 3s linear infinite;
+    }
+    .btn--glow .btn-text { position: relative; z-index: 1; }
+    .btn--glow:hover { background: rgba(255,255,255,0.1); box-shadow: 0 0 24px rgba(168,197,245,0.12); }
+    .btn--ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn--ghost:hover { background: var(--bg-surface-hover); color: var(--text); }
+    .btn--cta {
+      background: linear-gradient(135deg, rgba(168,197,245,0.18) 0%, rgba(144,144,232,0.18) 100%);
+      border: 1px solid rgba(168,197,245,0.3);
+      color: var(--text);
+      padding: 13px 32px;
+      font-size: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 32px rgba(168,197,245,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .btn--cta:hover {
+      background: linear-gradient(135deg, rgba(168,197,245,0.26) 0%, rgba(144,144,232,0.26) 100%);
+      box-shadow: 0 0 50px rgba(168,197,245,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+      transform: translateY(-1px);
+    }
+    @keyframes btn-spin { to { transform: rotate(360deg); } }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 62px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(9,9,16,0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-logo-wordmark {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+      padding: 110px 40px 0;
+    }
+    .hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    /* Grid lines overlay */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: calc(100% / 6) 100px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 12%, rgba(0,0,0,0.7) 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 12%, rgba(0,0,0,0.7) 80%, transparent 100%);
+    }
+    /* Spotlight beams */
+    .spotlights {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .spotlight-beam {
+      position: absolute;
+      width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background: conic-gradient(
+        from 0deg at 50% 100%,
+        transparent 340deg,
+        rgba(100,140,255,0.09) 355deg,
+        transparent 360deg
+      );
+      animation: spotlight-spin var(--dur, 8s) linear infinite;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes spotlight-spin { to { transform: rotate(360deg); } }
+
+    /* Cross / plus markers */
+    .hero-cross {
+      position: absolute;
+      width: 14px; height: 14px;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+    .hero-cross::before, .hero-cross::after {
+      content: '';
+      position: absolute;
+      background: rgba(168,197,245,0.8);
+    }
+    .hero-cross::before { width: 1px; height: 100%; top: 0; left: 50%; }
+    .hero-cross::after  { height: 1px; width: 100%; top: 50%; left: 0; }
+
+    /* Hero content */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
       text-align: center;
-      padding: 24px;
+      max-width: 820px;
     }
-    .level-num {
-      font-size: 11px;
+    .hero-headline {
+      font-size: clamp(2.6rem, 6.5vw, 4.8rem);
       font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #7c6af7;
-      margin-bottom: 20px;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
     }
-    h1 {
-      font-size: clamp(2rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 540px;
+      line-height: 1.65;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .hero-status {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 40px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: rgba(34,197,94,0.07);
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: status-pulse 2s ease-in-out infinite;
+    }
+    .hero-status span {
+      font-size: 0.75rem;
+      color: rgba(34,197,94,0.85);
+      font-weight: 500;
+    }
+    @keyframes status-pulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50%      { opacity: 0.8; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+    }
+
+    /* ─── Pipeline Cards ─── */
+    .hero-cards {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin-top: 52px;
+      width: 100%;
+      max-width: 1040px;
+      height: 300px;
+      pointer-events: none;
+    }
+    .pipeline-card {
+      position: absolute;
+      width: 272px;
+      border-radius: 12px;
+      background: rgba(10,10,20,0.97);
+      border: 1px solid rgba(255,255,255,0.09);
+      padding: 18px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      pointer-events: auto;
+      transition: border-color 0.3s;
+    }
+    .pipeline-card:hover { border-color: rgba(168,197,245,0.25); }
+    .pc-left  {
+      left: calc(50% - 400px);
+      bottom: 0;
+      transform: translateY(16px) rotate(-1.5deg);
+      opacity: 0.65;
+      z-index: 0;
+    }
+    .pc-center {
+      left: calc(50% - 136px);
+      bottom: 18px;
+      z-index: 2;
+      box-shadow: 0 0 60px rgba(100,140,255,0.12), 0 24px 60px rgba(0,0,0,0.6);
+      border-color: rgba(168,197,245,0.15);
+    }
+    .pc-right {
+      right: calc(50% - 400px);
+      bottom: 0;
+      transform: translateY(16px) rotate(1.5deg);
+      opacity: 0.65;
+      z-index: 0;
+    }
+    .pc-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 13px;
+      margin-bottom: 13px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .pc-icon {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .pc-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+    }
+    .pc-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+    .pc-log { display: flex; flex-direction: column; gap: 7px; }
+    .log-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .log-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ld-ok     { background: var(--green); }
+    .ld-run    { background: var(--blue); animation: status-pulse 1.4s infinite; }
+    .ld-pend   { background: rgba(255,255,255,0.18); }
+    .pc-btn {
+      display: block;
+      margin-top: 13px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+    .pc-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+
+    /* ─── Feature Slider ─── */
+    .feature-slider {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.008);
+      padding: 28px 0;
+      position: relative;
+    }
+    .feature-slider::before, .feature-slider::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 100px; z-index: 2;
+      pointer-events: none;
+    }
+    .feature-slider::before { left:  0; background: linear-gradient(to right, #090910, transparent); }
+    .feature-slider::after  { right: 0; background: linear-gradient(to left,  #090910, transparent); }
+    .slider-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .slider-track:hover { animation-play-state: paused; }
+    .slider-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 28px;
+      white-space: nowrap;
+    }
+    .slider-icon {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .slider-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .slider-sep {
+      width: 1px; height: 18px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── Generic Section ─── */
+    .section {
+      padding: 96px 40px;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+    .section--border-top { border-top: 1px solid var(--border); }
+
+    /* ─── Pipeline Viz ─── */
+    .pipeline-viz {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 8px;
+    }
+    .pv-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .pv-box {
+      padding: 11px 22px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+    }
+    .pv-box.ok {
+      border-color: rgba(34,197,94,0.3);
+      color: rgba(34,197,94,0.9);
+    }
+    .pv-box.active {
+      border-color: rgba(168,197,245,0.4);
+      box-shadow: 0 0 20px rgba(168,197,245,0.1);
+      color: var(--accent);
+    }
+    .pv-status { font-size: 0.62rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+    .pv-conn {
+      width: 44px;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      position: relative;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    .pv-dot {
+      position: absolute;
+      top: 50%; left: 0;
+      transform: translateY(-50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(168,197,245,0.7);
+      animation: dot-travel 2.2s ease-in-out infinite;
+      animation-delay: var(--dd, 0s);
+    }
+    @keyframes dot-travel {
+      0%   { left: 0;           opacity: 0; }
+      8%   { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { left: calc(100% - 8px); opacity: 0; }
+    }
+
+    /* ─── Feature Cards ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+    }
+    .feat-card {
+      padding: 28px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .feat-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(280px circle at var(--cx,50%) var(--cy,50%),
+        rgba(120,160,255,0.07), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .feat-card:hover::after { opacity: 1; }
+    .feat-card:hover { border-color: rgba(255,255,255,0.13); }
+    .feat-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
       margin-bottom: 16px;
     }
-    .tag {
-      display: inline-block;
-      font-size: 10px;
+    .feat-card h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .feat-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ─── Integrations ─── */
+    .integrations-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 48px;
+    }
+    .integ-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .integ-chip:hover { background: var(--bg-surface-hover); border-color: var(--border-bright); color: var(--text); }
+    .integ-chip:focus-visible { outline: 2px solid rgba(168,197,245,0.7); outline-offset: 2px; }
+    .integ-chip svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .pc-btn:focus-visible { outline: 2px solid rgba(168,197,245,0.7); outline-offset: 2px; }
+
+    /* ─── CTA ─── */
+    .cta-wrap {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .cta-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(100,140,255,0.1), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner {
+      position: relative; z-index: 1;
+      padding: 120px 40px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 24px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .cta-inner h2 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
       font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.3);
-      color: #7c6af7;
-      padding: 5px 14px;
-      border-radius: 999px;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+    .cta-inner > p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 420px;
+      line-height: 1.7;
+    }
+
+    /* ─── Footer ─── */
+    .footer-wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 64px 40px 40px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
       margin-bottom: 32px;
     }
-    p {
-      max-width: 520px;
-      color: #6b6b8a;
-      line-height: 1.7;
-      font-size: 1rem;
-      margin-bottom: 48px;
+    .footer-brand-tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.6;
+      max-width: 200px;
     }
-    .concept {
-      background: #12121a;
-      border: 1px solid #1e1e2e;
-      border-radius: 12px;
-      padding: 24px 32px;
-      max-width: 540px;
-      text-align: left;
-      margin-bottom: 40px;
-    }
-    .concept h3 {
-      font-size: 0.75rem;
+    .footer-col h5 {
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: #7c6af7;
-      margin-bottom: 10px;
+      color: var(--text-dim);
+      margin-bottom: 14px;
     }
-    .concept p {
-      font-size: 0.9rem;
-      color: #9090a8;
-      margin-bottom: 0;
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      transition: color 0.2s;
     }
-    a.back {
-      font-size: 0.875rem;
-      color: #7c6af7;
-      text-decoration: none;
-      border: 1px solid rgba(124,106,247,0.3);
-      padding: 10px 22px;
-      border-radius: 8px;
-      transition: background 0.2s;
+    .footer-col ul li a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-dim);
     }
-    a.back:hover { background: rgba(124,106,247,0.1); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 860px) {
+      nav { padding: 0 20px; }
+      .hero { padding: 100px 20px 0; }
+      .hero-cards { display: none; }
+      .hero-status { margin-top: 32px; margin-bottom: 64px; }
+      .section { padding: 64px 20px; }
+      .pipeline-viz { gap: 0; }
+      .pv-conn { width: 24px; }
+      .cta-inner { padding: 80px 20px; }
+      .footer-wrap { padding: 48px 20px 32px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 500px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 8px; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .pv-conn { width: 16px; }
+    }
+
+    /* ─── Reduced Motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .spotlight-beam,
+      .btn-effect,
+      .slider-track,
+      .pv-dot,
+      .status-dot,
+      .log-dot.ld-run { animation: none !important; }
+      .btn--cta:hover { transform: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="level-num">Level 04</div>
-  <h1>The Cloner</h1>
-  <div class="tag">Placeholder — Work in Progress</div>
-  <p>This page will demonstrate learning from professional sites by extracting their actual HTML, CSS, and JS — deconstruction over imitation.</p>
-  <div class="concept">
-    <h3>The Concept</h3>
-    <p>Moving beyond screenshots to extract underlying code from high-end websites via site teardown skills, giving Claude the actual implementation to learn from.</p>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <!-- Pipe icon -->
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.7)" stroke-width="1"/>
+        <rect x="18" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.7)" stroke-width="1"/>
+        <path d="M8 13H18" stroke="rgba(168,197,245,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="13" cy="13" r="2.5" fill="rgba(168,197,245,0.9)"/>
+        <circle cx="13" cy="13" r="4.5" stroke="rgba(168,197,245,0.2)" stroke-width="1"/>
+      </svg>
+      <span class="nav-logo-wordmark">PipeKit</span>
+    </a>
+    <div class="nav-right">
+      <a href="#" class="btn btn--ghost" style="padding:8px 14px; font-size:0.8rem;">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" style="opacity:0.7">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.48 2 2 5.48 2 10.02c0 3.54 2.29 6.54 5.47 7.6.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.36-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.96 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.26 2-.27.68.01 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49 0 1.07-.01 1.93-.01 2.2 0 .21.14.46.55.38A8.013 8.013 0 0018 10.02C18 5.48 14.52 2 10 2z"/>
+        </svg>
+        GitHub
+      </a>
+      <a href="#" class="btn btn--glow">
+        <span class="btn-effect"></span>
+        <span class="btn-text">Get started</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="hero" id="top">
+    <canvas class="hero-canvas" id="hero-canvas"></canvas>
+
+    <div class="spotlights">
+      <div class="spotlight-beam" style="--dur:9s; --delay:0s"></div>
+      <div class="spotlight-beam" style="--dur:13s; --delay:-4s; opacity:0.7;"></div>
+      <div class="spotlight-beam" style="--dur:7s; --delay:-7s; opacity:0.5;"></div>
+    </div>
+
+    <div class="hero-grid"></div>
+
+    <!-- Cross markers -->
+    <span class="hero-cross" style="top:22%;left:14%"></span>
+    <span class="hero-cross" style="top:22%;right:14%"></span>
+    <span class="hero-cross" style="top:62%;left:8%"></span>
+    <span class="hero-cross" style="top:62%;right:8%"></span>
+
+    <div class="hero-content">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Introducing PipeKit</span></div>
+      </div>
+      <h1 class="hero-headline">
+        <span class="text-gradient">The world's fastest</span><br>
+        <span class="text-gradient">CI/CD pipeline.</span>
+      </h1>
+      <p class="hero-sub">
+        Powered by PipeKit + open infrastructure. Ship code at machine speed with intelligent caching, parallel execution, and zero-config deployments.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn--cta">Get started free</a>
+        <a href="#features" class="btn btn--ghost">View features →</a>
+      </div>
+    </div>
+
+    <!-- Pipeline Cards -->
+    <div class="hero-cards">
+      <!-- Left: Build -->
+      <div class="pipeline-card pc-left">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(251,191,36,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(251,191,36,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div>
+            <div class="pc-title">Build</div>
+            <div class="pc-sub">acme/api · main</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>Installing packages</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Cache hit (847ms saved)</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Compiling TypeScript</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Build complete · 2.1s</div>
+        </div>
+      </div>
+
+      <!-- Center: Test -->
+      <div class="pipeline-card pc-center">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(59,130,246,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(59,130,246,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div>
+            <div class="pc-title">Running Tests</div>
+            <div class="pc-sub">142 suites · parallel</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>unit: 142 passed · 0.8s</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>integration: 38 passed · 1.2s</div>
+          <div class="log-line"><div class="log-dot ld-run"></div>e2e: running 14/24…</div>
+          <div class="log-line"><div class="log-dot ld-pend"></div>coverage: pending</div>
+        </div>
+        <button class="pc-btn">View live logs →</button>
+      </div>
+
+      <!-- Right: Deploy -->
+      <div class="pipeline-card pc-right">
+        <div class="pc-header">
+          <div class="pc-icon" style="background:rgba(34,197,94,0.12)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(34,197,94,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
+          <div>
+            <div class="pc-title">Deploy</div>
+            <div class="pc-sub">production · us-east-1</div>
+          </div>
+        </div>
+        <div class="pc-log">
+          <div class="log-line"><div class="log-dot ld-ok"></div>Build verified</div>
+          <div class="log-line"><div class="log-dot ld-ok"></div>Tests passed</div>
+          <div class="log-line"><div class="log-dot ld-run"></div>Rolling out to k8s…</div>
+          <div class="log-line"><div class="log-dot ld-pend"></div>Health check</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-status">
+      <div class="status-dot"></div>
+      <span>All systems operational · 99.98% uptime</span>
+    </div>
   </div>
-  <a class="back" href="/">← Back to hub</a>
+
+  <!-- ═══════════════ FEATURE SLIDER ═══════════════ -->
+  <div class="feature-slider">
+    <div class="slider-track" id="slider-track">
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><span class="slider-label">Build</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><span class="slider-label">Test</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div><span class="slider-label">Deploy</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="slider-label">Monitor</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div><span class="slider-label">Rollback</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><span class="slider-label">Cache</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="slider-label">Scale</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="slider-label">Notify</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><span class="slider-label">Preview</span></div>
+      <div class="slider-sep"></div>
+      <div class="slider-item"><div class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="slider-label">Audit</span></div>
+      <div class="slider-sep"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PIPELINE SECTION ═══════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:260px">
+        <div class="badge"><span>Zero friction</span></div>
+      </div>
+      <h3>
+        <span class="text-gradient">Your code. Your pipeline.</span><br>
+        Maximum velocity.
+      </h3>
+      <p>PipeKit is compatible with any stack. Intelligent parallelization and smart dependency caching cut pipeline times by up to 10× with zero configuration.</p>
+    </div>
+
+    <div class="pipeline-viz">
+      <div class="pv-stage">
+        <div class="pv-box ok">source</div>
+        <span class="pv-status">✓ ready</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box ok">install</div>
+        <span class="pv-status">✓ cached</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0.4s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box ok">build</div>
+        <span class="pv-status">✓ 2.1s</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:0.8s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box active">test</div>
+        <span class="pv-status">⏳ running</span>
+      </div>
+      <div class="pv-conn"><div class="pv-dot" style="--dd:1.2s"></div></div>
+      <div class="pv-stage">
+        <div class="pv-box">deploy</div>
+        <span class="pv-status">— pending</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FEATURES ═══════════════ -->
+  <div class="section section--border-top" id="features">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Extensible by design</span></div>
+      </div>
+      <h3>
+        Your team. Your workflow.<br>
+        <span class="text-gradient">Maximum flexibility.</span>
+      </h3>
+      <p>PipeKit adapts to how you build, giving your team complete control without sacrificing speed or reliability.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h4>Sub-second builds</h4>
+        <p>Intelligent layer caching and parallel job execution cut build times by up to 10×. Your code compiles before your coffee cools.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div>
+        <h4>Auto rollback</h4>
+        <p>Automatic failure detection with instant rollback to the last known-good deployment. Zero manual intervention required.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h4>Full observability</h4>
+        <p>Real-time logs, distributed traces, and build analytics in a unified pane. Know exactly what's happening at every stage.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <h4>50+ integrations</h4>
+        <p>Connect GitHub, GitLab, Docker, Kubernetes, AWS, and more. Works with your existing stack from day one with no lock-in.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ INTEGRATIONS ═══════════════ -->
+  <div class="section section--border-top">
+    <div class="section-header">
+      <div class="between-lines" style="max-width:280px">
+        <div class="badge"><span>Framework freedom</span></div>
+      </div>
+      <h3>
+        <span class="text-gradient">Built on open standards.</span><br>
+        Connects to everything.
+      </h3>
+      <p>PipeKit integrates with the tools your team already uses — from source control to cloud providers to notification channels.</p>
+    </div>
+
+    <div class="integrations-grid">
+      <!-- GitHub -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.48 2 2 5.48 2 10.02c0 3.54 2.29 6.54 5.47 7.6.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.36-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.96 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.26 2-.27.68.01 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49 0 1.07-.01 1.93-.01 2.2 0 .21.14.46.55.38A8.013 8.013 0 0018 10.02C18 5.48 14.52 2 10 2z"/></svg>
+        GitHub
+      </div>
+      <!-- GitLab -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 18.45L6.87 8.73H13.13L10 18.45z"/><path opacity=".7" d="M10 18.45L6.87 8.73H2.54L10 18.45z"/><path opacity=".4" d="M2.54 8.73l-1 3.07a.68.68 0 00.25.76L10 18.45 2.54 8.73z"/><path d="M2.54 8.73H6.87L5.08 3.25a.34.34 0 00-.65 0L2.54 8.73z"/><path opacity=".7" d="M10 18.45l3.13-9.72H17.46L10 18.45z"/><path opacity=".4" d="M17.46 8.73l1 3.07a.68.68 0 01-.25.76L10 18.45l7.46-9.72z"/><path d="M17.46 8.73H13.13l1.79-5.48a.34.34 0 01.65 0l1.89 5.48z"/></svg>
+        GitLab
+      </div>
+      <!-- Docker -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><rect x="2" y="10" width="3" height="3" rx=".4"/><rect x="6" y="10" width="3" height="3" rx=".4"/><rect x="10" y="10" width="3" height="3" rx=".4"/><rect x="10" y="6" width="3" height="3" rx=".4"/><rect x="6" y="6" width="3" height="3" rx=".4"/><path d="M17.5 10.5c-.3-1.5-1.5-2-2.5-2h-.5c-.2-1.2-1-2.5-3-3l-.5 1c1.3.4 1.8 1.3 2 2H5a3 3 0 000 6h9.5a3 3 0 003-3v-1z" opacity=".6"/></svg>
+        Docker
+      </div>
+      <!-- Kubernetes -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l7.2 4v8L10 18l-7.2-4V6L10 2z" opacity=".15" stroke="currentColor" stroke-width="1"/><path d="M10 5v10M5.3 7.5l9.4 5M14.7 7.5l-9.4 5"/></svg>
+        Kubernetes
+      </div>
+      <!-- AWS -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 13c-1.7-.7-2-2-2-3s.5-2.5 2-3l.7 1.2C5.9 8.7 5.5 9.5 5.5 10s.4 1.3 1.2 1.8L6 13zm8 0l-.7-1.2c.8-.5 1.2-1.3 1.2-1.8s-.4-1.3-1.2-1.8L14 7c1.5.5 2 2 2 3s-.3 2.3-2 3zM8 6.5l-.8-1.3A5.5 5.5 0 0110 4.5c.96 0 1.88.27 2.8.7L12 6.5A4 4 0 0010 6a4 4 0 00-2 .5zM8 13.5l-.2 1.5A5.5 5.5 0 0010 15.5c.96 0 1.88-.27 2.8-.7L12.2 13.3A4 4 0 0110 14a4 4 0 01-2-.5z" opacity=".7"/><circle cx="10" cy="10" r="2"/></svg>
+        AWS
+      </div>
+      <!-- Vercel -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3L18 17H2L10 3z"/></svg>
+        Vercel
+      </div>
+      <!-- Slack -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><rect x="3" y="11" width="4" height="4" rx="2" opacity=".9"/><rect x="11" y="3" width="4" height="4" rx="2" opacity=".9"/><rect x="3" y="11" width="4" height="2" rx="0" transform="rotate(-90 7 11)" opacity=".4"/><rect x="11" y="11" width="4" height="4" rx="2" opacity=".9"/><rect x="11" y="11" width="4" height="2" rx="0" opacity=".4"/></svg>
+        Slack
+      </div>
+      <!-- Terraform -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.5 5l5 2.9v5.8l-5-2.9V5z" opacity=".9"/><path d="M3.5 7.9l5-2.9v5.8l-5 2.9V7.9z" opacity=".6"/><path d="M9 13.7l5-2.9v2.9L9 16.6v-2.9z" opacity=".4"/></svg>
+        Terraform
+      </div>
+      <!-- Datadog -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a6 6 0 100 12A6 6 0 0010 4zm0 2a4 4 0 110 8 4 4 0 010-8z" opacity=".5"/><circle cx="10" cy="10" r="2"/></svg>
+        Datadog
+      </div>
+      <!-- Postgres -->
+      <div class="integ-chip">
+        <svg viewBox="0 0 20 20" fill="currentColor"><ellipse cx="10" cy="6" rx="6" ry="3" opacity=".7"/><path d="M4 6v8c0 1.65 2.69 3 6 3s6-1.35 6-3V6" opacity=".4"/><path d="M4 10c0 1.65 2.69 3 6 3s6-1.35 6-3" opacity=".4"/></svg>
+        Postgres
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CTA ═══════════════ -->
+  <div class="cta-wrap">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="between-lines" style="max-width:260px">
+        <div class="badge"><span>Shine bright</span></div>
+      </div>
+      <h2>
+        <span class="text-gradient">Your brand. Your pipeline.</span>
+      </h2>
+      <p>PipeKit can be fully customized to fit your team's workflow, branding, and infrastructure needs from day one.</p>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center;">
+        <a href="#" class="btn btn--cta">Get started free</a>
+        <a href="#" class="btn btn--ghost">Talk to sales →</a>
+      </div>
+      <p style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;">No credit card required. Free tier available.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo" style="gap:9px;">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.6)" stroke-width="1"/>
+              <rect x="18" y="9" width="7" height="8" rx="2" fill="rgba(168,197,245,0.25)" stroke="rgba(168,197,245,0.6)" stroke-width="1"/>
+              <path d="M8 13H18" stroke="rgba(168,197,245,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="13" cy="13" r="2.5" fill="rgba(168,197,245,0.85)"/>
+            </svg>
+            <span style="font-size:0.9rem; font-weight:700; letter-spacing:-0.02em;">PipeKit</span>
+          </a>
+          <p class="footer-brand-tagline">The world's fastest CI/CD pipeline for modern development teams.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Roadmap</a></li>
+            <li><a href="#">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Docs</h5>
+          <ul>
+            <li><a href="#">Getting started</a></li>
+            <li><a href="#">Configuration</a></li>
+            <li><a href="#">Integrations</a></li>
+            <li><a href="#">API reference</a></li>
+            <li><a href="#">CLI</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 PipeKit, Inc. All rights reserved.</span>
+        <span style="display:flex;gap:20px;">
+          <a href="#" style="color:var(--text-dim);transition:color 0.2s;" onmouseover="this.style.color='var(--text-muted)'" onmouseout="this.style.color='var(--text-dim)'">Privacy</a>
+          <a href="#" style="color:var(--text-dim);transition:color 0.2s;" onmouseover="this.style.color='var(--text-muted)'" onmouseout="this.style.color='var(--text-dim)'">Terms</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Canvas dot-noise background ── */
+    (function() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const GRID = 26;
+      let w, h, dots = [];
+
+      function resize() {
+        w = canvas.width  = canvas.offsetWidth;
+        h = canvas.height = canvas.offsetHeight;
+        buildDots();
+      }
+
+      function buildDots() {
+        dots = [];
+        for (let x = GRID / 2; x < w; x += GRID) {
+          for (let y = GRID / 2; y < h; y += GRID) {
+            dots.push({ x, y, a: Math.random() * 0.35 + 0.02 });
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        dots.forEach(d => {
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, 1, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(168,197,245,${d.a})`;
+          ctx.fill();
+        });
+      }
+
+      function tick() {
+        /* drift alpha slowly for a subtle shimmer */
+        dots.forEach(d => {
+          d.a += (Math.random() - 0.5) * 0.015;
+          if (d.a < 0.01) d.a = 0.01;
+          if (d.a > 0.38) d.a = 0.38;
+        });
+        draw();
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!noMotion) setInterval(tick, 2400);
+      else draw();
+    })();
+
+    /* ── Feature slider: duplicate items for seamless loop ── */
+    (function() {
+      const track = document.getElementById('slider-track');
+      if (!track) return;
+      track.innerHTML += track.innerHTML;
+    })();
+
+    /* ── Feature card mouse-tracking glow ── */
+    document.querySelectorAll('.feat-card, .pipeline-card').forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--cx', ((e.clientX - r.left) / r.width  * 100) + '%');
+        el.style.setProperty('--cy', ((e.clientY - r.top)  / r.height * 100) + '%');
+      });
+    });
+  </script>
 </body>
 </html>

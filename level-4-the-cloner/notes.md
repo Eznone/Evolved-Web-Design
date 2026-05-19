@@ -1,0 +1,6 @@
+- Uses a lot of tokens (obviously)
+    - Output increased a lot as well
+- Must continue utilizing the ui-ux skill as there were noteable dissapointments in the first iteration
+- Just with two prompts the total usage went to 30% of daily usage for claude pro
+- Would be a great first attempt but afterwards you'd have to get hands dirty and fix things on your own for efficiency with credits
+- Claude put everything into one file, so knowing how to modularize would be a handly skill
