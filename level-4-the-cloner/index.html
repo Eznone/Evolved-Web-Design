@@ -247,18 +247,25 @@
     }
     .spotlight-beam {
       position: absolute;
-      width: 200%; height: 200%;
-      top: -50%; left: -50%;
+      inset: 0;
+      transform-origin: var(--tx, 50%) 0%;
       background: conic-gradient(
-        from 0deg at 50% 100%,
-        transparent 340deg,
-        rgba(100,140,255,0.09) 355deg,
-        transparent 360deg
+        at var(--tx, 50%) 0%,
+        transparent          calc(162deg + var(--ta, 0deg)),
+        rgba(100,140,255,0.11) calc(175deg + var(--ta, 0deg)),
+        rgba(100,140,255,0.11) calc(185deg + var(--ta, 0deg)),
+        transparent          calc(198deg + var(--ta, 0deg))
       );
-      animation: spotlight-spin var(--dur, 8s) linear infinite;
+      animation: spotlight-sway var(--dur, 9s) ease-in-out infinite alternate;
       animation-delay: var(--delay, 0s);
     }
-    @keyframes spotlight-spin { to { transform: rotate(360deg); } }
+    .spotlight-beam:nth-child(1) { --tx: 20%; --ta: -18deg; }
+    .spotlight-beam:nth-child(2) { --tx: 50%; --ta:   0deg; }
+    .spotlight-beam:nth-child(3) { --tx: 80%; --ta: +18deg; }
+    @keyframes spotlight-sway {
+      from { transform: rotate(-5deg); }
+      to   { transform: rotate(5deg); }
+    }
 
     /* Cross / plus markers */
     .hero-cross {
