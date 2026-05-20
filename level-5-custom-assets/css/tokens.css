@@ -1,0 +1,115 @@
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --tan:         #c9a96e;
+  --tan-dim:     rgba(201, 169, 110, 0.15);
+  --tan-border:  rgba(201, 169, 110, 0.30);
+  --tan-light:   #e2c98a;
+  --crimson:     #7a2a18;
+  --bg:          #0d0b08;
+  --surface:     #1a1510;
+  --glass:       rgba(18, 13, 8, 0.82);
+  --glass-border:rgba(201, 169, 110, 0.22);
+  --text:        #f4ede0;
+  --muted:       #9a8a72;
+  --font-head:   'Cinzel', serif;
+  --font-body:   'Crimson Text', serif;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tan);
+  background: var(--tan-dim);
+  border: 1px solid var(--tan-border);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+
+.chip.alt {
+  color: var(--text);
+  background: rgba(244,237,224,0.08);
+  border-color: rgba(244,237,224,0.18);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tan);
+  margin-bottom: 0.75rem;
+}
+
+h2 {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  margin-bottom: 1rem;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,110,0.4); }
+  50%       { box-shadow: 0 0 0 10px rgba(201,169,110,0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%       { transform: translateY(6px); opacity: 0.5; }
+}
+
+.animate-in { animation: fadeInUp 0.65s ease both; }
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
